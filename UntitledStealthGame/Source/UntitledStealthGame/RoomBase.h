@@ -24,10 +24,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void SetParent(ARoomBase* room) { ParentRoom = room; }
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> NeighboursData;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> ClosingData;
+
+private:
+	ARoomBase* ParentRoom;
 };
