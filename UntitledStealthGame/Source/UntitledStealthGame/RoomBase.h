@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "RoomBase.generated.h"
 
+enum EDirection;
+
 UCLASS()
 class UNTITLEDSTEALTHGAME_API ARoomBase : public AActor
 {
@@ -22,5 +24,9 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void SetCameFromDirection(EDirection dir) { cameFromDirection = dir; }
 
+private:
+	EDirection cameFromDirection;
+	ARoomBase* parentRoom = nullptr;
 };
