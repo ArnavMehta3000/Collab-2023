@@ -26,5 +26,5 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TEnumAsByte<EDirection> Direction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<TSubclassOf<ARoomBase>> PossibleRoomsInDir;
+	TArray<UClass*> PossibleRoomsInDir;
 };
