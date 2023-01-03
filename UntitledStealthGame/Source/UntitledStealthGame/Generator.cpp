@@ -2,7 +2,6 @@
 
 
 #include "Generator.h"
-#include "UntitledStealthGame/RoomBase.h"
 #include "UntitledStealthGame/RoomNeighbourConnections.h"
 
 // Sets default values
@@ -29,17 +28,17 @@ void AGenerator::Tick(float DeltaTime)
 
 ARoomBase* AGenerator::GetFirstRoom()
 {
-	return nullptr;
+	return spawnedRooms[0];
 }
 
 ARoomBase* AGenerator::GetLastRoom()
 {
-	return nullptr;
+	return spawnedRooms.Last();
 }
 
 int32 AGenerator::GetSpawnedRoomCount()
 {
-	return int32();
+	return spawnedRooms.Num();
 }
 
 void AGenerator::ClearAllRooms()
