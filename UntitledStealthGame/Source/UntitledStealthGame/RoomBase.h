@@ -28,4 +28,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> NeighboursData;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TArray<FNeighbourData> ClosingData;
 };
