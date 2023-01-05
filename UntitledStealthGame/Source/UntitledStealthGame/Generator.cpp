@@ -33,8 +33,8 @@ void AGenerator::Generate(ARoomBase* startRoom)
 		depth++;
 
 	auto neighbourData = GetRandomNeighbourData(startRoom);
-	int limit = 100;
-	bool found = false;
+	int limit          = 100;
+	bool found         = false;
 	
 	// Begin loop to get valid direction
 	UClass* randRoom = nullptr;
@@ -66,8 +66,81 @@ void AGenerator::Generate(ARoomBase* startRoom)
 	}
 }
 
+void AGenerator::GenerateIterative()
+{	
+	UE_LOG(LogScript, Warning, TEXT("Starting iterative generation. Spawn Count: %u"), spawnCount);
+
+	ARoomBase* currentRoom = nullptr;
+	int currentLimit = 0;
+	for (int i = 0; i < spawnCount; i++)
+	{
+		currentRoom = spawnedRooms.Last();
+		
+		// Get random direction (from neightbour data)
+		bool validDirFound = false;
+		int neighbourDataIndex = -1;
+		int iterationCount = 0;
+
+		while (!validDirFound)
+		{
+			if (currentLimit >= iterationLimit)
+			{
+				// No valid room could be found remove previous room
+				auto roomToDelete = spawnedRooms.Pop();
+				roomToDelete->Destroy();
+
+				currentRoom        = spawnedRooms.Last();
+				spawnPointer       = currentRoom->GetActorLocation();
+				i--;
+				neighbourDataIndex = -1;
+				validDirFound      = false;
+				currentLimit       = 0;
+			}
+
+
+			int index = FMath::RandRange(0, currentRoom->NeighboursData.Num() - 1);
+			auto& data = currentRoom->NeighboursData[index];
+
+			if (NextDirectionIsValid(data.Direction))
+			{
+				// Next direction is valid, save info
+				validDirFound = true;
+				neighbourDataIndex = index;
+			}
+			else
+			{
+				// Keep trying until a valid direction is found
+				iterationCount++;
+				currentLimit++;
+				continue;
+			}
+		}
+
+		if (!validDirFound)
+		{
+			UE_LOG(LogScript, Error, TEXT("Valid room not found"));
+			return;
+		}
+
+
+		
+		UE_LOG(LogScript, Warning, TEXT("Room %u took %u iterations"), i, iterationCount);
+
+		auto& neighbourData = currentRoom->NeighboursData[neighbourDataIndex];
+		spawnPointer = MoveInDirection(neighbourData.Direction, spawnPointer);
+
+		int randRoomIndex= FMath::RandRange(0, neighbourData.PossibleRoomsInDir.Num() - 1);
+		SpawnRoom(neighbourData.PossibleRoomsInDir[randRoomIndex], spawnPointer);
+	}
+	CloseLastRoom();
+	UE_LOG(LogScript, Warning, TEXT("finished generation: Spawned Rooms: %u"), spawnedRooms.Num());
+}
+
 void AGenerator::CloseLastRoom()
 {
+	ARoomBase* currentRoom = spawnedRooms.Last();
+	
+	bool validDirFound = false;
 }
 
 ARoomBase* AGenerator::SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform)

@@ -29,6 +29,9 @@ public:
 	void Generate(ARoomBase* startRoom);
 
 	UFUNCTION(BlueprintCallable)
+	void GenerateIterative();
+
+	UFUNCTION(BlueprintCallable)
 	void CloseLastRoom ();
 	UFUNCTION(BlueprintCallable)
 	ARoomBase* SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform);
@@ -42,6 +45,9 @@ private:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 spawnCount = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 iterationLimit = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float gridCellSize = 1000.0f;
