@@ -72,7 +72,7 @@ void AGenerator::GenerateIterative()
 
 	ARoomBase* currentRoom = nullptr;
 	int currentLimit = 0;
-	for (int i = 0; i < spawnCount; i++)
+	for (int i = 0; i < spawnCount + 1; i++)
 	{
 		currentRoom = spawnedRooms.Last();
 		
@@ -132,15 +132,44 @@ void AGenerator::GenerateIterative()
 		int randRoomIndex= FMath::RandRange(0, neighbourData.PossibleRoomsInDir.Num() - 1);
 		SpawnRoom(neighbourData.PossibleRoomsInDir[randRoomIndex], spawnPointer);
 	}
-	CloseLastRoom();
 	UE_LOG(LogScript, Warning, TEXT("finished generation: Spawned Rooms: %u"), spawnedRooms.Num());
 }
 
 void AGenerator::CloseLastRoom()
 {
+	UE_LOG(LogScript, Warning, TEXT("Closing last room"));
+
+	// Remove last room
+	auto roomToDelete = spawnedRooms.Pop();
+	roomToDelete->Destroy();
+
+	// Get current room to close (prev room)
 	ARoomBase* currentRoom = spawnedRooms.Last();
+	spawnPointer = currentRoom->GetActorLocation();
+
+	// Get closing data of cuurent room
+	auto& dataArr = currentRoom->ClosingData;
+	int validIndex = -1;
+
+	for (int i = 0; i < dataArr.Num(); i++)
+	{
+		if (NextDirectionIsValid(dataArr[i].Direction))
+		{
+			validIndex = i;
+			break;
+		}
+	}
 	
-	bool validDirFound = false;
+	if (validIndex == -1)
+	{
+		UE_LOG(LogScript, Error, TEXT("Closing room not found"));
+		return;
+	}
+
+	spawnPointer = MoveInDirection(dataArr[validIndex].Direction, spawnPointer);
+
+	int randClosingRoomIndex = FMath::RandRange(0, dataArr[validIndex].PossibleRoomsInDir.Num() - 1);
+	SpawnRoom(dataArr[validIndex].PossibleRoomsInDir[randClosingRoomIndex], spawnPointer);
 }
 
 ARoomBase* AGenerator::SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform)
