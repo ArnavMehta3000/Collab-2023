@@ -35,7 +35,7 @@ public:
 	void CloseLastRoom ();
 
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
 
 	UFUNCTION(BlueprintCallable)
