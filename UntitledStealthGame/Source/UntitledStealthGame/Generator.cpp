@@ -172,6 +172,11 @@ void AGenerator::CloseLastRoom()
 	SpawnRoom(dataArr[validIndex].PossibleRoomsInDir[randClosingRoomIndex], spawnPointer);
 }
 
+void AGenerator::GenerateDoors()
+{
+
+}
+
 ARoomBase* AGenerator::SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform)
 {
 	auto room = GetWorld()->SpawnActor<ARoomBase>(startRoom, transform);

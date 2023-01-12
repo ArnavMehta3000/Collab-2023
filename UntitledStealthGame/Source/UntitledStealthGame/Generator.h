@@ -6,8 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Structures.h"
 #include "RoomBase.h"
-#include "DoorBase.h"
 #include "Generator.generated.h"
+
+class ADoorBase;
 
 UCLASS()
 class UNTITLEDSTEALTHGAME_API AGenerator : public AActor
