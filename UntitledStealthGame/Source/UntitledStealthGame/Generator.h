@@ -33,6 +33,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void CloseLastRoom ();
+
+
+	UFUNCTION(BlueprintPure)
+	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
+
 	UFUNCTION(BlueprintCallable)
 	ARoomBase* SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform);
 
