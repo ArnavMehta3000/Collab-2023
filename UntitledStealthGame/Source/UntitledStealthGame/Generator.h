@@ -37,7 +37,7 @@ public:
 	void CloseLastRoom ();
 
 	UFUNCTION(BlueprintCallable)
-	void GenerateDoors();
+	void GenerateDoors(TSubclassOf<ADoorBase> doorClass);
 
 	UFUNCTION(BlueprintPure)
 	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
@@ -50,6 +50,7 @@ private:
 	FNeighbourData GetRandomNeighbourData(ARoomBase* room);
 	bool NextDirectionIsValid(EDirection dir);
 	FVector MoveInDirection(EDirection dir, FVector vec);
+	EDirection GetDirectionFromPosDiff(FVector diff);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
