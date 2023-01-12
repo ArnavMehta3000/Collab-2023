@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Structures.h"
 #include "RoomBase.h"
+#include "DoorBase.h"
 #include "Generator.generated.h"
 
 UCLASS()
@@ -34,6 +35,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CloseLastRoom ();
 
+	UFUNCTION(BlueprintCallable)
+	void GenerateDoors();
 
 	UFUNCTION(BlueprintPure)
 	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
