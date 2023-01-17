@@ -193,20 +193,16 @@ void AGenerator::GenerateDoors(TSubclassOf<ADoorBase> doorClass)
 
 		FVector spawnPos = (currentPos + prevPos) / 2;
 		FVector spawnRot(0.0f, 90.0f, 0.0f);
-		// Place normally
-		if (fromToDirection == PosY || fromToDirection == NegY)
-		{
-			auto door          = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnPos));
-			door->cameFromRoom = prevRoom;
-			door->goingToRoom  = currentRoom;
-		}
-		// Rotate by 90 degrees
-		if (fromToDirection == PosX || fromToDirection == NegX)
-		{
-			auto door          = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnRot.Rotation(), spawnPos));
-			door->cameFromRoom = prevRoom;
-			door->goingToRoom  = currentRoom;
-		}
+		ADoorBase* door = nullptr;
+		
+		
+		if (fromToDirection == PosY || fromToDirection == NegY)  // Place normally
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnPos));
+		if (fromToDirection == PosX || fromToDirection == NegX)  // Rotate by 90 degrees
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnRot.Rotation(), spawnPos));
+
+		door->cameFromRoom = prevRoom;
+		door->goingToRoom  = currentRoom;
 	}
 }
 
@@ -264,11 +260,11 @@ EDirection AGenerator::GetDirectionFromPosDiff(FVector diff)
 	diff.Normalize();
 	UE_LOG(LogScript, Warning, TEXT("Direction: (%f, %f)"), diff.X, diff.Y);
 
-	FVector negX = FVector(-1.0f, 0.0f, 0.0f);
-	FVector posX = FVector(1.0f, 0.0f, 0.0f);
-	FVector negY = FVector(0.0f, -1.0f, 0.0f);
-	FVector posY = FVector(0.0f, 1.0f, 0.0f);
-	float tolerance = 0.1f;
+	const FVector negX = FVector(-1.0f, 0.0f, 0.0f);
+	const FVector posX = FVector(1.0f, 0.0f, 0.0f);
+	const FVector negY = FVector(0.0f, -1.0f, 0.0f);
+	const FVector posY = FVector(0.0f, 1.0f, 0.0f);
+	float tolerance    = 0.1f;
 	
 	EDirection dir{};
 	if (diff.Equals(negX, tolerance))
