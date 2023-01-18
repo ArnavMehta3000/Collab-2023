@@ -2,6 +2,7 @@
 
 
 #include "Generator.h"
+#include "UntitledStealthGame/DoorBase.h"
 
 // Sets default values
 AGenerator::AGenerator()
@@ -89,9 +90,9 @@ void AGenerator::GenerateIterative()
 				auto roomToDelete = spawnedRooms.Pop();
 				roomToDelete->Destroy();
 
+				i--;
 				currentRoom        = spawnedRooms.Last();
 				spawnPointer       = currentRoom->GetActorLocation();
-				i--;
 				neighbourDataIndex = -1;
 				validDirFound      = false;
 				currentLimit       = 0;
@@ -172,6 +173,39 @@ void AGenerator::CloseLastRoom()
 	SpawnRoom(dataArr[validIndex].PossibleRoomsInDir[randClosingRoomIndex], spawnPointer);
 }
 
+void AGenerator::GenerateDoors(TSubclassOf<ADoorBase> doorClass)
+{
+	int limit = spawnedRooms.Num();
+
+	for (int i = 1; i < limit; i++)
+	{
+		ARoomBase* currentRoom   = spawnedRooms[i];
+		ARoomBase* prevRoom      = spawnedRooms[i - 1];
+		FVector currentPos       = currentRoom->GetActorLocation();
+		FVector prevPos          = prevRoom->GetActorLocation();
+		FVector posDiff          = currentPos - prevPos;
+
+		EDirection fromToDirection = GetDirectionFromPosDiff(posDiff);
+		
+		// Testing
+		FString name = UEnum::GetValueAsString(fromToDirection);
+		UE_LOG(LogScript, Warning, TEXT("From %u to %u. Direction: %s"), (i - 1), i, *name);
+
+		FVector spawnPos = (currentPos + prevPos) / 2;
+		FVector spawnRot(0.0f, 90.0f, 0.0f);
+		ADoorBase* door = nullptr;
+		
+		
+		if (fromToDirection == PosY || fromToDirection == NegY)  // Place normally
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnPos));
+		if (fromToDirection == PosX || fromToDirection == NegX)  // Rotate by 90 degrees
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnRot.Rotation(), spawnPos));
+
+		door->cameFromRoom = prevRoom;
+		door->goingToRoom  = currentRoom;
+	}
+}
+
 ARoomBase* AGenerator::SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform)
 {
 	auto room = GetWorld()->SpawnActor<ARoomBase>(startRoom, transform);
@@ -219,4 +253,32 @@ FVector AGenerator::MoveInDirection(EDirection dir, FVector vec)
 	}
 
 	return temp;
+}
+
+EDirection AGenerator::GetDirectionFromPosDiff(FVector diff)
+{
+	diff.Normalize();
+	UE_LOG(LogScript, Warning, TEXT("Direction: (%f, %f)"), diff.X, diff.Y);
+
+	const FVector negX = FVector(-1.0f, 0.0f, 0.0f);
+	const FVector posX = FVector(1.0f, 0.0f, 0.0f);
+	const FVector negY = FVector(0.0f, -1.0f, 0.0f);
+	const FVector posY = FVector(0.0f, 1.0f, 0.0f);
+	float tolerance    = 0.1f;
+	
+	EDirection dir{};
+	if (diff.Equals(negX, tolerance))
+		dir = NegX;
+	else if (diff.Equals(negY, tolerance))
+		dir = NegY;
+	else if (diff.Equals(posX, tolerance))
+		dir = PosX;
+	else if (diff.Equals(posY, tolerance))
+		dir = PosY;
+	else // Should never be the case
+	{
+		UE_LOG(LogScript, Error, TEXT("SHOULD NOT BE HERE Direction: (% f, % f)"), diff.X, diff.Y);
+	}
+
+	return dir;
 }
