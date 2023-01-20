@@ -53,7 +53,7 @@ private:
 	EDirection GetDirectionFromPosDiff(FVector diff);
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 spawnCount = 5;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
