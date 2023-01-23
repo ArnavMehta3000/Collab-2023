@@ -8,6 +8,8 @@
 #include "RoomBase.h"
 #include "Generator.generated.h"
 
+class ADoorBase;
+
 UCLASS()
 class UNTITLEDSTEALTHGAME_API AGenerator : public AActor
 {
@@ -29,7 +31,17 @@ public:
 	void Generate(ARoomBase* startRoom);
 
 	UFUNCTION(BlueprintCallable)
+	void GenerateIterative();
+
+	UFUNCTION(BlueprintCallable)
 	void CloseLastRoom ();
+
+	UFUNCTION(BlueprintCallable)
+	void GenerateDoors(TSubclassOf<ADoorBase> doorClass);
+
+	UFUNCTION(BlueprintPure)
+	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
+
 	UFUNCTION(BlueprintCallable)
 	ARoomBase* SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform);
 
@@ -38,10 +50,14 @@ private:
 	FNeighbourData GetRandomNeighbourData(ARoomBase* room);
 	bool NextDirectionIsValid(EDirection dir);
 	FVector MoveInDirection(EDirection dir, FVector vec);
+	EDirection GetDirectionFromPosDiff(FVector diff);
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 spawnCount = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 iterationLimit = 10;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float gridCellSize = 1000.0f;
