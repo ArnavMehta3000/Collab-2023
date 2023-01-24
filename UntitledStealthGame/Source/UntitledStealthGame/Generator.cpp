@@ -203,6 +203,7 @@ void AGenerator::GenerateDoors(TSubclassOf<ADoorBase> doorClass)
 
 		door->cameFromRoom = prevRoom;
 		door->goingToRoom  = currentRoom;
+		spawnedDoors.Push(door);
 	}
 }
 

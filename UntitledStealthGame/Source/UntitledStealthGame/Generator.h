@@ -42,6 +42,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	inline TArray<ARoomBase*>& GetAllSpawnedRooms() { return spawnedRooms; }
 
+	UFUNCTION(BlueprintPure)
+	inline TArray<ADoorBase*>& GetAllSpawnedDoors() { return spawnedDoors; }
+
 	UFUNCTION(BlueprintCallable)
 	ARoomBase* SpawnRoom(TSubclassOf<ARoomBase> startRoom, FTransform transform);
 
@@ -64,6 +67,7 @@ public:
 
 private:
 	TArray<ARoomBase*> spawnedRooms;
+	TArray<ADoorBase*> spawnedDoors;
 	FVector spawnPointer;
 	int32 depth = 0;
 };
