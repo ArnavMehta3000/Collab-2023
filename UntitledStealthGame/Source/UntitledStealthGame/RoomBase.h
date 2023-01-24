@@ -30,6 +30,12 @@ public:
 	int64 MaxEnemySpawnCount = 2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int64 MaxGadgetSpawnCount = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int64 MaxKeySpawnCount = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> NeighboursData;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> ClosingData;
