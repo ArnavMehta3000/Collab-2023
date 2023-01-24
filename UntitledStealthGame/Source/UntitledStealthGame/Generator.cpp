@@ -192,14 +192,24 @@ void AGenerator::GenerateDoors(TSubclassOf<ADoorBase> doorClass)
 		UE_LOG(LogScript, Warning, TEXT("From %u to %u. Direction: %s"), (i - 1), i, *name);
 
 		FVector spawnPos = (currentPos + prevPos) / 2;
-		FVector spawnRot(0.0f, 90.0f, 0.0f);
 		ADoorBase* door = nullptr;
-		
-		
-		if (fromToDirection == PosY || fromToDirection == NegY)  // Place normally
+
+		// Rotate the door appropriately
+		switch (fromToDirection)
+		{
+		case PosX:
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(FVector(0.0f, 90.0f, 0.0f).Rotation(), spawnPos));
+			break;
+		case PosY:
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(FRotator(0.0, 180.0, 0.0f), spawnPos));
+			break;
+		case NegX:
+			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(FVector(0.0f, -90.0f, 0.0f).Rotation(), spawnPos));
+			break;
+		case NegY:
 			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnPos));
-		if (fromToDirection == PosX || fromToDirection == NegX)  // Rotate by 90 degrees
-			door = GetWorld()->SpawnActor<ADoorBase>(doorClass, FTransform(spawnRot.Rotation(), spawnPos));
+			break;
+		}
 
 		door->cameFromRoom = prevRoom;
 		door->goingToRoom  = currentRoom;
