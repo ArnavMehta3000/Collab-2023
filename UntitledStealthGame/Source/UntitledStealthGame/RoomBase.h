@@ -26,6 +26,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	void SetParent(ARoomBase* room) { ParentRoom = room; }
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int64 MaxEnemySpawnCount = 2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<FNeighbourData> NeighboursData;
